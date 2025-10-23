@@ -210,7 +210,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibWFya3VzdmhhZ2VuIiwiYSI6ImNtZ2NlNjNrbjE0bzkyb
               paint: {
                   'circle-radius': 10, // Radius in pixels
                   'circle-color': '#FF0000', // Red color
-                  'circle-opacity': 0.9 // Semi-transparent
+                  'circle-opacity': 0.8 // Semi-transparent
               }
             });
         });
@@ -249,6 +249,21 @@ Chart.register( Chart.LineElement, Chart.LineController, Chart.Legend, Chart.Too
       }
     }],
     options: {
+      onHover: (event, chartElements) => {
+        // Capture index of current point being hovered
+        if (chartElements.length) {
+          const { datasetIndex, index } = chartElements[0];
+          // Draw circle
+          map.getSource('circle-center').setData({
+                type: 'Feature',
+                geometry: {
+                    type: 'Point',
+                    coordinates: etappe_coordinates[index] // New coordinates
+                },
+                properties: {}
+            });
+        }
+      },
       animation: false,
       maintainAspectRatio: false,
       interaction: { intersect: false, mode: 'index' },
@@ -276,7 +291,7 @@ Chart.register( Chart.LineElement, Chart.LineController, Chart.Legend, Chart.Too
     }
   };
 
-  const chart = new Chart(ctx, config);
+const chart = new Chart(ctx, config);
 
 
 
@@ -292,7 +307,6 @@ function distBetweenCoords(coord1, coord2) {
 
 map.on("mousemove", (e) => {
   var activeCoord = [parseFloat(JSON.stringify(e.lngLat.lng)), parseFloat(JSON.stringify(e.lngLat.lat))];
-  console.log(activeCoord)
 
   // Now we find closest coordinate in etappe_coordinates. We also store its index in the array for later.
   var closestCoord = [0,0]
@@ -314,7 +328,15 @@ map.on("mousemove", (e) => {
         properties: {}
     });
 
-
   // Now we pass this information to the altitude map
-  // chart.data.datasets[0].data[index]
+  const pointIndex = index;
+  const datasetIndex = 0;
+  const meta = chart.getDatasetMeta(datasetIndex);
+  const point = meta.data[pointIndex];
+
+  chart.tooltip.setActiveElements(
+    [{ datasetIndex, index: pointIndex }],
+    { x: point.x, y: point.y }
+  );
+  chart.update();
 });
