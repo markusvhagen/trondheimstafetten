@@ -6,6 +6,7 @@ gpx_file = open("gpx_files/Trondheim_stafetten_etappe_1.gpx", "r")
 
 gpx = gpxpy.parse(gpx_file)
 
+gps_array = []
 z_array = []
 total_dist = 0
 dist_array = [0]
@@ -26,10 +27,14 @@ for track in gpx.tracks:
                 total_dist = total_dist + increment
                 dist_array.append(int(total_dist))
 
-            #print("[" + str(xy[1]) + ", " + str(xy[0]) + "]" + ",") #have to switch the order because this is how mapbox reads coordinates
+            gps_array.append([xy[1],xy[0]]) #have to switch the order because this is how mapbox reads coordinates
             z_array.append(int(z[0]))
             prev_xy_coord = xy
             if has_entered_point_loop == False:
                 has_entered_point_loop = True
-#print(z_array)
+print("GPS:")
+print(gps_array)
+print("Elevation:")
+print(z_array)
+print("Distance:")
 print(dist_array)

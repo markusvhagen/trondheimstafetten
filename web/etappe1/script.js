@@ -161,6 +161,7 @@ const etappe_altitude_array = [6, 6, 6, 6, 6, 6, 6, 6, 5, 5, 5, 5, 5, 5, 5, 5, 5
 mapboxgl.accessToken = 'pk.eyJ1IjoibWFya3VzdmhhZ2VuIiwiYSI6ImNtZ2NlNjNrbjE0bzkybHI1ZmM3MjV3aTEifQ.BE1AT8J3W1peoFGt4LOxOw';
     const map = new mapboxgl.Map({
         container: 'map',
+        style: 'mapbox://styles/mapbox/light-v9',
         center: [10.379895, 63.432254],
         zoom: 13.5
     });
