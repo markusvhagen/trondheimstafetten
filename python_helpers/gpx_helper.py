@@ -2,7 +2,7 @@ import gpxpy
 import gpxpy.gpx
 import geopy.distance
 
-gpx_file = open("gpx_files/Trondheim_stafetten_etappe_4.gpx", "r")
+gpx_file = open("gpx_files/Trondheim_stafetten_etappe_5.gpx", "r")
 
 gpx = gpxpy.parse(gpx_file)
 
