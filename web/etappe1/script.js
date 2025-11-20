@@ -6,6 +6,13 @@ const etappe_distance_array = [0, 4, 7, 14, 21, 23, 31, 37, 44, 54, 61, 64, 74, 
 const etappe_altitude_array = [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 4, 4, 4, 4, 4, 5, 5, 5, 5, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 4, 4, 5, 6, 6, 6, 6, 6, 5, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3];
 
 
+// *****************  //
+// GLOBALE FUNKSJONER //
+// *****************  //
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 
 // ********** //
 // ETAPPERUTE //
@@ -24,9 +31,11 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibWFya3VzdmhhZ2VuIiwiYSI6ImNtZ2NlNjNrbjE0bzkyb
     });
 
     map.on('load', () => {
-      map.setLayoutProperty('road', 'visibility', 'none');
-      map.setLayoutProperty('admin', 'visibility', 'none');
-      map.setLayoutProperty('poi-label', 'visibility', 'none');
+      map.style.stylesheet.layers.forEach(function(layer) {
+          if (layer.type === 'symbol') {
+              map.setLayoutProperty(layer.id, "visibility", "none");
+          }
+      });
       const pinRouteGeojson = {
         "type": "FeatureCollection",
         "features":
@@ -59,12 +68,74 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibWFya3VzdmhhZ2VuIiwiYSI6ImNtZ2NlNjNrbjE0bzkyb
         });
         map.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1.5 });
 
+
+        // Let us add all markers we want to show
+        const popup1 = new mapboxgl.Popup({ closeButton: false });
+        const marker1 = new mapboxgl.Marker({
+            color: 'black',
+            scale: 1,
+            draggable: false,
+            pitchAlignment: 'auto',
+            rotationAlignment: 'auto'
+        })
+            .setLngLat([10.374573, 63.431212])
+            .setPopup(popup1)
+            .addTo(map)
+            .togglePopup();
+        popup1.setHTML("Start - Skansen");
+
+
+        const popup2 = new mapboxgl.Popup({ closeButton: false });
+        const marker2 = new mapboxgl.Marker({
+            color: 'black',
+            scale: 1,
+            draggable: false,
+            pitchAlignment: 'auto',
+            rotationAlignment: 'auto'
+        })
+            .setLngLat([10.379433, 63.432211])
+            .setPopup(popup2)
+            .addTo(map)
+            .togglePopup();
+        popup2.setHTML("Svingbrua");
+
+
+        const popup3 = new mapboxgl.Popup({ closeButton: false });
+        const marker3 = new mapboxgl.Marker({
+            color: 'black',
+            scale: 1,
+            draggable: false,
+            pitchAlignment: 'auto',
+            rotationAlignment: 'auto'
+        })
+            .setLngLat([10.393158, 63.436174])
+            .setPopup(popup3)
+            .addTo(map)
+            .togglePopup();
+        popup3.setHTML("Kneika");
+
+        const popup4 = new mapboxgl.Popup({ closeButton: false });
+        const marker4 = new mapboxgl.Marker({
+            color: 'black',
+            scale: 1,
+            draggable: false,
+            pitchAlignment: 'auto',
+            rotationAlignment: 'auto'
+        })
+            .setLngLat([10.400383, 63.438794])
+            .setPopup(popup4)
+            .addTo(map)
+            .togglePopup();
+        popup4.setHTML("Mål - Rockheim");
+
+
+        // Here we add the actual route
         const pinRoute = pinRouteGeojson.features[0].geometry.coordinates;
         // Create the marker and popup that will display the elevation queries
         const popup = new mapboxgl.Popup({ closeButton: false });
         const marker = new mapboxgl.Marker({
-            color: 'green',
-            scale: 2,
+            color: 'red',
+            scale: 1,
             draggable: false,
             pitchAlignment: 'auto',
             rotationAlignment: 'auto'
@@ -104,10 +175,13 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibWFya3VzdmhhZ2VuIiwiYSI6ImNtZ2NlNjNrbjE0bzkyb
         // Get the total line distance
         const pathDistance = turf.lineDistance(path);
         let start;
+
         function frame(time) {
             if (!start) start = time;
             const animationPhase = (time - start) / animationDuration;
             if (animationPhase > 1) {
+                popup.remove();
+                marker.remove();
                 return;
             }
 
@@ -119,6 +193,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibWFya3VzdmhhZ2VuIiwiYSI6ImNtZ2NlNjNrbjE0bzkyb
                 lat: alongPath[1]
             };
 
+
             // Sample the terrain elevation. We round to an integer value to
             // prevent showing a lot of digits during the animation
             const elevation = Math.floor(
@@ -127,7 +202,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibWFya3VzdmhhZ2VuIiwiYSI6ImNtZ2NlNjNrbjE0bzkyb
             );
 
             // Update the popup altitude value and marker location
-            popup.setHTML('Altitude: ' + elevation + 'm<br/>');
+            popup.setHTML('hm: ' + elevation + 'm');
             marker.setLngLat(lngLat);
 
             // Reduce the visible length of the line by using a line-gradient to cutoff the line
