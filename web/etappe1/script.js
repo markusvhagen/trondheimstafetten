@@ -21,7 +21,7 @@ function sleep(ms) {
 mapboxgl.accessToken = 'pk.eyJ1IjoibWFya3VzdmhhZ2VuIiwiYSI6ImNtZ2NlNjNrbjE0bzkybHI1ZmM3MjV3aTEifQ.BE1AT8J3W1peoFGt4LOxOw';
     const map = new mapboxgl.Map({
         container: 'map',
-        center: [10.379895, 63.432254],
+        center: [10.392797, 63.436074],
         zoom: 14,
         pitch: 70,
         bearing: 320,
