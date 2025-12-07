@@ -15,9 +15,6 @@ function isMobile() {
 }
 var isMobile = isMobile();
 var mapZoom = (!isMobile) ? 14 : 12;
-if (isMobile) {
-  document.getElementById("title").style.display = "none";
-}
 
 
 // ********** //
@@ -120,31 +117,19 @@ function addPopup(id, coordinate, innerHTML) {
 mapboxgl.accessToken = 'pk.eyJ1IjoibWFya3VzdmhhZ2VuIiwiYSI6ImNtZ2NlNjNrbjE0bzkybHI1ZmM3MjV3aTEifQ.BE1AT8J3W1peoFGt4LOxOw';
     const map = new mapboxgl.Map({
         container: 'map',
-        style: 'mapbox://styles/mapbox/light-v9',
+        style: 'mapbox://styles/mapbox/satellite-v9',
         center: (!isMobile) ? [10.387867, 63.434497] : [10.387867, 63.434497],
         zoom: mapZoom
     });
 
     map.on('load', () => {
 
-      addMarker(1, [10.371573, 63.431212], "https://png.pngtree.com/png-clipart/20230818/original/pngtree-bio-outdoor-toilet-vector-illustration-vector-illustration-isolated-on-white-background-picture-image_8030179.png", 0.04);
-      addMarker(2, [10.392797, 63.436874], "https://cdn-icons-png.flaticon.com/512/2956/2956744.png", 0.1)
-      addMarker(3, [10.387912, 63.433513], "https://cdn-icons-png.flaticon.com/512/431/431248.png", 0.1)
+      //addMarker(1, [10.371573, 63.431212], "https://png.pngtree.com/png-clipart/20230818/original/pngtree-bio-outdoor-toilet-vector-illustration-vector-illustration-isolated-on-white-background-picture-image_8030179.png", 0.04);
+      //addMarker(2, [10.392797, 63.436874], "https://cdn-icons-png.flaticon.com/512/2956/2956744.png", 0.1)
+      //addMarker(3, [10.387912, 63.433513], "https://cdn-icons-png.flaticon.com/512/431/431248.png", 0.1)
 
-      let popup1 = addPopup(1, [10.378365, 63.431695],"<h1>Svingbrua</h1> Visste du at Svingbrua er den eneste brua i Norge som bruker horisontal rotasjon for åpne seg?");
-      popup1.addTo(map);
-
-        // This section highlights all the parks
-        const layers = map.getStyle().layers;
-        layers.forEach(function(layer) {
-            if (layer['source-layer'] === 'landuse') {
-                // Check if this layer filters parks
-                if (layer.filter && layer.filter.some(f => f.includes('park'))) {
-                    // Set park color to green
-                    map.setPaintProperty(layer.id, 'fill-color', '#6BCB77');
-                }
-            }
-        });
+      //let popup1 = addPopup(1, [10.378365, 63.431695],"<h1>Svingbrua</h1> Visste du at Svingbrua er den eneste brua i Norge som bruker horisontal rotasjon for åpne seg?");
+      //popup1.addTo(map);
 
 
         // This function draws each "etappe"
@@ -171,7 +156,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibWFya3VzdmhhZ2VuIiwiYSI6ImNtZ2NlNjNrbjE0bzkyb
               },
               'paint': {
                   'line-color': routeColor,
-                  'line-width': 5
+                  'line-width': 7
               }
           });
 
@@ -218,7 +203,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibWFya3VzdmhhZ2VuIiwiYSI6ImNtZ2NlNjNrbjE0bzkyb
           });
       }
 
-      createEtappe(1, etappe_coordinates, "#2e6f40", "#06402b");
+      createEtappe(1, etappe_coordinates, "#90D5FF", "#57B9FF");
 
 
       map.addSource('finish-point', {
@@ -242,14 +227,14 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibWFya3VzdmhhZ2VuIiwiYSI6ImNtZ2NlNjNrbjE0bzkyb
         type: 'symbol',
         source: 'finish-point',
         layout: {
-            'text-field': "Mål",
-            'text-size': 20,
+            'text-field': "Veksling",
+            'text-size': 25,
             'text-allow-overlap': true, // Allow text to overlap other symbols if necessary
         },
         paint: {
           "text-color": "white",
           "text-halo-color": "black",
-          "text-halo-width": 1
+          "text-halo-width": 2
         }
       });
 
@@ -281,129 +266,19 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibWFya3VzdmhhZ2VuIiwiYSI6ImNtZ2NlNjNrbjE0bzkyb
             layout: {
                 'icon-image': 'stafettpinne',
                 'icon-allow-overlap': true,
-                'icon-size': 1
+                'icon-size': 1,
+                'text-field': "0m",
+                'text-size': 25,
+                'text-allow-overlap': true, // Allow text to overlap other symbols if necessary
+            },
+            paint: {
+              "text-color": "white",
+              "text-halo-color": "black",
+              "text-halo-width": 2
             }
             });
         }
       });
-
-
-// ********* //
-// HØYDEKART //
-// ********* //
-
-Chart.register( Chart.LineElement, Chart.LineController, Chart.Legend, Chart.Tooltip, Chart.LinearScale, Chart.PointElement, Chart.Filler, Chart.Title);
-
-const ctx = document.getElementById("route-elevation-chart").getContext("2d");
-const chartData = {
-    labels: etappe_distance_array,
-    datasets: [{
-      data: etappe_altitude_array,
-      fill: true,
-      borderColor: '#06402b',
-      backgroundColor: 'rgba(6, 64, 43, 0.4)',
-      tension: 0.1,
-      pointRadius: 0,
-      spanGaps: true
-    }]
-  };
-
-  const config = {
-    type: 'line',
-    data: chartData,
-    plugins: [{
-      beforeInit: (chart, args, options) => {
-        const maxHeight = Math.max(...chart.data.datasets[0].data);
-        chart.options.scales.x.min = Math.min(...chart.data.labels);
-        chart.options.scales.x.max = Math.max(...chart.data.labels);
-        chart.options.scales.y.max = maxHeight + Math.round(maxHeight * 0.2);
-        chart.options.scales.y1.max = maxHeight + Math.round(maxHeight * 0.2);
-      }
-    }],
-    options: {
-      onHover: (event, chartElements) => {
-        // Capture index of current point being hovered
-        // Only do this if we are not on mobile device
-        if (!isMobile) {
-          if (chartElements.length) {
-            const { datasetIndex, index } = chartElements[0];
-            // Draw circle
-            map.getSource('circle-center').setData({
-                  type: 'Feature',
-                  geometry: {
-                      type: 'Point',
-                      coordinates: etappe_coordinates[index] // New coordinates
-                  },
-                  properties: {}
-              });
-          }
-        }
-      },
-      animation: false,
-      maintainAspectRatio: false,
-      interaction: { intersect: false, mode: 'index' },
-      tooltip: { position: 'nearest' },
-      scales: {
-        x: { type: 'linear', display: false },
-        y: { type: 'linear', beginAtZero: true },
-        y1: { type: 'linear', display: true, position: 'right', beginAtZero: true, grid: { drawOnChartArea: false }},
-      },
-      plugins: {
-        annotation: {
-                    annotations: {
-                        etappe1Line:{
-                          type: 'line',
-                          mode: 'vertical',
-                          scaleID: 'x',
-                          value: etappe_distance_array[0],
-                          borderColor: 'rgba(0, 0, 0, 0.7)',
-                          borderWidth: 6,
-                          label: {
-                              display: true,
-                              content: "Start",
-                              enabled: true,
-                              position: 'start',
-                              xAdjust: 4,
-                              yAdjust: -4,
-                              backgroundColor: 'rgba(8,144,0,0.7)',
-                              font: {
-                                  size: 12
-                              }
-                          }
-                        }
-                    }
-                },
-        title: { align: "end", display: true, text: "Distanse, m / Høydemeter, m" },
-        legend: { display: false },
-        tooltip: {
-          displayColors: false,
-          callbacks: {
-            title: (tooltipItem) => {
-              return tooltipItem[0].raw + 'hm';
-            },
-            label: (tooltipItem) => {
-              var dataIndex = tooltipItem.dataIndex;
-              // These two parameters decide the average we take (which is here over 6 points)
-              var nudge = 3;
-              var leftNudge = -nudge;
-              var rightNudge = nudge;
-              // Have to run something else if we are very close to one of the edges of the graph
-              if (dataIndex < nudge) {
-                leftNudge = 0;
-              }
-              if (dataIndex>dataIndex[-1]-(nudge-1)) {
-                rightNudge = 0;
-              }
-              var incline  = getIncline(etappe_coordinates[dataIndex+leftNudge],etappe_coordinates[dataIndex+rightNudge],etappe_altitude_array[dataIndex+leftNudge],etappe_altitude_array[dataIndex+rightNudge]);
-              return incline + "%";
-            }
-          }
-        }
-      }
-    }
-  };
-
-const chart = new Chart(ctx, config);
 
 
 
@@ -426,7 +301,7 @@ if (!isMobile) {
       }
     }
 
-    // Let us move the red point on the map accordingly to where the cursor is
+    // Let us move the red point on the map accordingly to where the cursor is.
     map.getSource('circle-center').setData({
           type: 'Feature',
           geometry: {
@@ -435,19 +310,8 @@ if (!isMobile) {
           },
           properties: {}
       });
+    // Let us also change the current distance.
+    map.setLayoutProperty("my-circle", "text-field", etappe_distance_array[index] + "m")
 
-    // Now we pass this information to the altitude map
-    const pointIndex = index;
-    const datasetIndex = 0;
-    const meta = chart.getDatasetMeta(datasetIndex);
-    const point = meta.data[pointIndex];
-
-    try {
-      chart.tooltip.setActiveElements(
-        [{ datasetIndex, index: pointIndex }],
-        { x: point.x, y: point.y }
-      );
-      chart.update();
-    } catch(error) {}
   });
 }

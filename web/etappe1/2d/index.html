@@ -3,23 +3,32 @@
   <head>
     <meta charset="utf-8">
     <title>Trondheimstafetten</title>
-
-
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
     <div id="container">
-      <div id="title">
-        <h1><b id="etappe">1 Promenaden</b></h1>
-        <p><b id="etappeFraTil">Skansenparken – Rockheim Park</b></p>
-        <p id="etappeInfo">1609m &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; Flat &nbsp;&nbsp;&nbsp;</p>
-      </div>
       <div id="map">
       </div>
       <div class="elevation-profile-container">
-        <canvas id="route-elevation-chart" style="width:100%;height:100%"></canvas>
+        <div id="etappeinfo">
+            <img src="https://teamtotalenergies.com/wp-content/uploads/2024/12/bioracer-corporate-black.png">
+            <h2><b>E1</b> : Promenaden - Rockheim</h2>
+            <h3><b>Distanse:</b> <span style="color:#57B9FF;">1609m</span></h3>
+            <h3><b>Løypeprofil:</b> <span style="color:#57B9FF;">Flat</span></h3>
+            <h3><b>Underlag:</b> <span style="color:#57B9FF;">Asfalt</span></h3>
+        </div>
+        <div id="etappetekst">
+          <p>
+            Etappen starter på Skansen og går i retning Svingbrua. Her venter en liten kneik over brua, før et langt flatt strekke langs strandpromenaden på ca 700m.
+            I enden av dette strekke er det en ny liten kneik. Når du kommer over denne kan du skimte vekslingen ved Rockheim.
+          </p>
+          <p>
+            <b>Høydeforskjell:</b> -1m.
+          </p>
+        </div>
+        <!--<canvas id="route-elevation-chart"></canvas> -->
       </div>
     </div>
 
