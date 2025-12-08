@@ -142,7 +142,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibWFya3VzdmhhZ2VuIiwiYSI6ImNtZ2NlNjNrbjE0bzkyb
                   'geometry': {
                       'type': 'LineString',
                       'coordinates': coordinates
-                  }
+                  },
               }
           });
 
@@ -203,7 +203,76 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibWFya3VzdmhhZ2VuIiwiYSI6ImNtZ2NlNjNrbjE0bzkyb
           });
       }
 
-      createEtappe(1, etappe_coordinates, "#90D5FF", "#57B9FF");
+      // This function creates etappe but with color on geojson line to indicate intensity.
+      function createEtappeWithIntensityColors(allCoordinates, changeColorAtIndexArray, colorArray) {
+          var idArray = [];
+          var indicesForChangingColors = [];
+          for (var j=0; j<colorArray.length; j++) {
+            idArray.push(j+1);
+          }
+
+          var slicedArrayAtIndex = 0;
+          for (var i=0; i<idArray.length; i++) {
+            var id = i+1;
+            if (changeColorAtIndexArray.length == i) {
+              map.addSource('etappeInt' + id, {
+                  'type': 'geojson',
+                  'data': {
+                      'type': 'Feature',
+                      'properties': {},
+                      'geometry': {
+                          'type': 'LineString',
+                          'coordinates': allCoordinates.slice(changeColorAtIndexArray[i-1]-1)
+                      },
+                  }
+              });
+              map.addLayer({
+                  'id': 'etappeInt' + id,
+                  'type': 'line',
+                  'source': 'etappeInt' + id,
+                  'layout': {
+                      'line-join': 'round',
+                      'line-cap': 'round'
+                  },
+                  'paint': {
+                      'line-color': colorArray[i],
+                      'line-width': 7
+                  }
+              });
+            }
+
+            else {
+              map.addSource('etappeInt' + id, {
+                  'type': 'geojson',
+                  'data': {
+                      'type': 'Feature',
+                      'properties': {},
+                      'geometry': {
+                          'type': 'LineString',
+                          'coordinates': allCoordinates.slice(slicedArrayAtIndex, changeColorAtIndexArray[i])
+                      },
+                  }
+              });
+              map.addLayer({
+                  'id': 'etappeInt' + id,
+                  'type': 'line',
+                  'source': 'etappeInt' + id,
+                  'layout': {
+                      'line-join': 'round',
+                      'line-cap': 'round'
+                  },
+                  'paint': {
+                      'line-color': colorArray[i],
+                      'line-width': 7
+                  }
+              });
+              slicedArrayAtIndex = changeColorAtIndexArray[i]-1;
+            }
+          }
+      }
+
+      createEtappe(7, etappe_coordinates, "#DC0000", "#C60000");
+      //createEtappeWithIntensityColors(etappe_coordinates, [20,185], ["#628141", "#CF0F0F", "#F79A19"]);
 
 
       map.addSource('finish-point', {
@@ -253,7 +322,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibWFya3VzdmhhZ2VuIiwiYSI6ImNtZ2NlNjNrbjE0bzkyb
                   type: 'Feature',
                   geometry: {
                       type: 'Point',
-                      coordinates: etappe_coordinates[0]
+                      coordinates: etappe_coordinates[20]
                   },
                   properties: {}
               }
@@ -267,7 +336,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibWFya3VzdmhhZ2VuIiwiYSI6ImNtZ2NlNjNrbjE0bzkyb
                 'icon-image': 'stafettpinne',
                 'icon-allow-overlap': true,
                 'icon-size': 1,
-                'text-field': "0m",
+                'text-field': etappe_distance_array[20].toString() + "m",
                 'text-size': 25,
                 'text-allow-overlap': true, // Allow text to overlap other symbols if necessary
             },
