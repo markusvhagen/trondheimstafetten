@@ -187,7 +187,7 @@ function aktivEtappePrint(index) {
 mapboxgl.accessToken = 'pk.eyJ1IjoibWFya3VzdmhhZ2VuIiwiYSI6ImNtZ2NlNjNrbjE0bzkybHI1ZmM3MjV3aTEifQ.BE1AT8J3W1peoFGt4LOxOw';
     const map = new mapboxgl.Map({
         container: 'map',
-        style: 'mapbox://styles/mapbox/light-v9',
+        style: 'mapbox://styles/mapbox/light-v10',
         center: (!isMobile) ? total_coordinate_array[etappe_8_last_index] : total_coordinate_array[etappe_1_last_index],
         zoom: mapZoom
     });

@@ -52,6 +52,41 @@ function getIncline(startCoord, endCoord, startElev, endElev) {
   return Math.round(inclinePercent);
 }
 
+// Function to add text, i.e. for parks.
+function addTextOnMap(id, coordinate, text, textSize) {
+  map.addSource('text-point' + id.toString(), {
+    type: 'geojson',
+    data: {
+        type: 'FeatureCollection',
+        features: [
+            {
+                type: 'Feature',
+                geometry: {
+                    type: 'Point',
+                    coordinates: coordinate
+                }
+            }
+        ]
+    }
+  });
+
+  map.addLayer({
+    id: 'text-layer' + id.toString(),
+    type: 'symbol',
+    source: 'text-point' + id.toString(),
+    layout: {
+        'text-field': text,
+        'text-size': textSize,
+        'text-allow-overlap': true, // Allow text to overlap other symbols if necessary
+    },
+    paint: {
+      "text-color": "white",
+      "text-halo-color": "black",
+      "text-halo-width": 2
+    }
+  });
+}
+
 // Function to add waypoint in map
 function addMarker(id, coordinate, iconUrl, scaling) {
   map.loadImage(
@@ -204,7 +239,6 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibWFya3VzdmhhZ2VuIiwiYSI6ImNtZ2NlNjNrbjE0bzkyb
       }
 
       createEtappe(1, etappe_coordinates, "#90D5FF", "#57B9FF");
-
 
       map.addSource('finish-point', {
         type: 'geojson',
