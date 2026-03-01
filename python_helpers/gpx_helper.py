@@ -18,7 +18,7 @@ def gradient_compute(elev_array,dist_array):
         gradient_array.append(gradient)
     return gradient_array
 
-gpx_file = open("gpx_files/Trondheim_stafetten_etappe_7.gpx", "r")
+gpx_file = open("gpx_files/Trondheim_stafetten_etappe_1.gpx", "r")
 
 gpx = gpxpy.parse(gpx_file)
 
@@ -63,7 +63,7 @@ print(gradient_compute(non_filtered_z_array,dist_array))
 flat = 0
 down = 0
 up = 0
-threshold = 1
+threshold = 1.5
 for gradient in gradient_compute(non_filtered_z_array,dist_array):
     if abs(gradient) < threshold:
         flat += 1

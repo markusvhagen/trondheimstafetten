@@ -419,8 +419,20 @@ if (!isMobile) {
           },
           properties: {}
       });
-    // Let us also change the current distance.
-    map.setLayoutProperty("my-circle", "text-field", etappe_distance_array[index] + "m")
+    // Let us also change the current distance, elevation and incline.
+    // These two parameters decide the average we take (which is here over 6 points)
+    var dataIndex = index;
+    var nudge = 3;
+    var leftNudge = -nudge;
+    var rightNudge = nudge;
+    // Have to run something else if we are very close to one of the edges of the graph
+    if (dataIndex < nudge) {
+      leftNudge = 0;
+    }
+    if (dataIndex>dataIndex[-1]-(nudge-1)) {
+      rightNudge = 0;
+    }
+    map.setLayoutProperty("my-circle", "text-field", etappe_distance_array[index] + "m, " + etappe_altitude_array[index] + "hm, inc:" + getIncline(etappe_coordinates[dataIndex+leftNudge],etappe_coordinates[dataIndex+rightNudge],etappe_altitude_array[dataIndex+leftNudge],etappe_altitude_array[dataIndex+rightNudge]) + "%")
 
   });
 }

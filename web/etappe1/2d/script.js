@@ -14,7 +14,7 @@ function isMobile() {
   return regex.test(navigator.userAgent);
 }
 var isMobile = isMobile();
-var mapZoom = (!isMobile) ? 14 : 12;
+var mapZoom = (!isMobile) ? 13.8 : 12.7;
 
 
 // ********** //
@@ -53,7 +53,7 @@ function getIncline(startCoord, endCoord, startElev, endElev) {
 }
 
 // Function to add text, i.e. for parks.
-function addTextOnMap(id, coordinate, text, textSize) {
+function addTextOnMap(id, coordinate, text, textSize, rotation=0) {
   map.addSource('text-point' + id.toString(), {
     type: 'geojson',
     data: {
@@ -77,6 +77,7 @@ function addTextOnMap(id, coordinate, text, textSize) {
     layout: {
         'text-field': text,
         'text-size': textSize,
+        'text-rotate': rotation,
         'text-allow-overlap': true, // Allow text to overlap other symbols if necessary
     },
     paint: {
@@ -153,7 +154,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibWFya3VzdmhhZ2VuIiwiYSI6ImNtZ2NlNjNrbjE0bzkyb
     const map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/satellite-v9',
-        center: (!isMobile) ? [10.387867, 63.434497] : [10.387867, 63.434497],
+        center: (!isMobile) ? [10.392797, 63.436074] : [10.386797, 63.436074],
         zoom: mapZoom
     });
 
@@ -177,7 +178,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibWFya3VzdmhhZ2VuIiwiYSI6ImNtZ2NlNjNrbjE0bzkyb
                   'geometry': {
                       'type': 'LineString',
                       'coordinates': coordinates
-                  }
+                  },
               }
           });
 
@@ -238,7 +239,80 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibWFya3VzdmhhZ2VuIiwiYSI6ImNtZ2NlNjNrbjE0bzkyb
           });
       }
 
-      createEtappe(1, etappe_coordinates, "#90D5FF", "#57B9FF");
+      // This function creates etappe but with color on geojson line to indicate intensity.
+      function createEtappeWithIntensityColors(allCoordinates, changeColorAtIndexArray, colorArray) {
+          var idArray = [];
+          var indicesForChangingColors = [];
+          for (var j=0; j<colorArray.length; j++) {
+            idArray.push(j+1);
+          }
+
+          var slicedArrayAtIndex = 0;
+          for (var i=0; i<idArray.length; i++) {
+            var id = i+1;
+            if (changeColorAtIndexArray.length == i) {
+              map.addSource('etappeInt' + id, {
+                  'type': 'geojson',
+                  'data': {
+                      'type': 'Feature',
+                      'properties': {},
+                      'geometry': {
+                          'type': 'LineString',
+                          'coordinates': allCoordinates.slice(changeColorAtIndexArray[i-1]-1)
+                      },
+                  }
+              });
+              map.addLayer({
+                  'id': 'etappeInt' + id,
+                  'type': 'line',
+                  'source': 'etappeInt' + id,
+                  'layout': {
+                      'line-join': 'round',
+                      'line-cap': 'round'
+                  },
+                  'paint': {
+                      'line-color': colorArray[i],
+                      'line-width': 7
+                  }
+              });
+            }
+
+            else {
+              map.addSource('etappeInt' + id, {
+                  'type': 'geojson',
+                  'data': {
+                      'type': 'Feature',
+                      'properties': {},
+                      'geometry': {
+                          'type': 'LineString',
+                          'coordinates': allCoordinates.slice(slicedArrayAtIndex, changeColorAtIndexArray[i])
+                      },
+                  }
+              });
+              map.addLayer({
+                  'id': 'etappeInt' + id,
+                  'type': 'line',
+                  'source': 'etappeInt' + id,
+                  'layout': {
+                      'line-join': 'round',
+                      'line-cap': 'round'
+                  },
+                  'paint': {
+                      'line-color': colorArray[i],
+                      'line-width': 7
+                  }
+              });
+              slicedArrayAtIndex = changeColorAtIndexArray[i]-1;
+            }
+          }
+      }
+
+      createEtappe(1, etappe_coordinates, "#DC0000", "#C60000");
+      addTextOnMap(1, [10.374573, 63.432212], "Skanseparken", 17)
+      addTextOnMap(2, [10.387912, 63.434913], "Promenaden", 17, -35)
+
+      //createEtappeWithIntensityColors(etappe_coordinates, [20,185], ["#628141", "#CF0F0F", "#F79A19"]);
+
 
       map.addSource('finish-point', {
         type: 'geojson',
@@ -262,7 +336,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibWFya3VzdmhhZ2VuIiwiYSI6ImNtZ2NlNjNrbjE0bzkyb
         source: 'finish-point',
         layout: {
             'text-field': "Veksling",
-            'text-size': 25,
+            'text-size': 20,
             'text-allow-overlap': true, // Allow text to overlap other symbols if necessary
         },
         paint: {
@@ -275,7 +349,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibWFya3VzdmhhZ2VuIiwiYSI6ImNtZ2NlNjNrbjE0bzkyb
       // Moving circle
       // We only add it if we are not on mobile device
       if (!isMobile) {
-          map.loadImage('https://markusvhagen.github.io/stafettpinne.png', (error, image) => {
+          map.loadImage('https://markusvhagen.github.io/etappe1/2d/polestar_car.png', (error, image) => {
             if (error) throw error;
             map.addImage('stafettpinne', image);
           });
@@ -287,7 +361,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibWFya3VzdmhhZ2VuIiwiYSI6ImNtZ2NlNjNrbjE0bzkyb
                   type: 'Feature',
                   geometry: {
                       type: 'Point',
-                      coordinates: etappe_coordinates[0]
+                      coordinates: etappe_coordinates[20]
                   },
                   properties: {}
               }
@@ -301,7 +375,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibWFya3VzdmhhZ2VuIiwiYSI6ImNtZ2NlNjNrbjE0bzkyb
                 'icon-image': 'stafettpinne',
                 'icon-allow-overlap': true,
                 'icon-size': 1,
-                'text-field': "0m",
+                'text-field': etappe_distance_array[20].toString() + "m",
                 'text-size': 25,
                 'text-allow-overlap': true, // Allow text to overlap other symbols if necessary
             },
@@ -344,8 +418,21 @@ if (!isMobile) {
           },
           properties: {}
       });
-    // Let us also change the current distance.
-    map.setLayoutProperty("my-circle", "text-field", etappe_distance_array[index] + "m")
+    // Let us also change the current distance, elevation and incline.
+    // These two parameters decide the average we take (which is here over 6 points)
+    var dataIndex = index;
+    var nudge = 3;
+    var leftNudge = -nudge;
+    var rightNudge = nudge;
+    // Have to run something else if we are very close to one of the edges of the graph
+    if (dataIndex < nudge) {
+      leftNudge = 0;
+    }
+    if (dataIndex>dataIndex[-1]-(nudge-1)) {
+      rightNudge = 0;
+    }
+    // Text that was in last argument before: etappe_distance_array[index] + "m, " + etappe_altitude_array[index] + "hm, inc:" + getIncline(etappe_coordinates[dataIndex+leftNudge],etappe_coordinates[dataIndex+rightNudge],etappe_altitude_array[dataIndex+leftNudge],etappe_altitude_array[dataIndex+rightNudge]) + "%"
+    map.setLayoutProperty("my-circle", "text-field", "")
 
   });
 }
