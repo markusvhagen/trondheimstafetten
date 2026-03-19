@@ -4,7 +4,7 @@
     <link href="https://www.doogal.co.uk">
       <text>doogal.co.uk</text>
     </link>
-    <time>2025-10-29T12:07:27.3594571Z</time>
+    <time>2026-03-19T10:23:36.0800305Z</time>
   </metadata>
   <trk>
     <name>Trondheim-stafetten E7 Byåsen 2800m</name>
@@ -704,27 +704,6 @@
       </trkpt>
       <trkpt lat="63.420009" lon="10.358231">
         <ele>148.9</ele>
-      </trkpt>
-      <trkpt lat="63.420120" lon="10.358037">
-        <ele>146.7</ele>
-      </trkpt>
-      <trkpt lat="63.420157" lon="10.357928">
-        <ele>145.8</ele>
-      </trkpt>
-      <trkpt lat="63.420257" lon="10.357576">
-        <ele>143</ele>
-      </trkpt>
-      <trkpt lat="63.420296" lon="10.357418">
-        <ele>141.7</ele>
-      </trkpt>
-      <trkpt lat="63.420398" lon="10.357046">
-        <ele>138.7</ele>
-      </trkpt>
-      <trkpt lat="63.420483" lon="10.356923">
-        <ele>136.3</ele>
-      </trkpt>
-      <trkpt lat="63.420518" lon="10.356931">
-        <ele>136.1</ele>
       </trkpt>
     </trkseg>
   </trk>
