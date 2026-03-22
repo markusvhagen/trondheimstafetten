@@ -18,7 +18,7 @@ def gradient_compute(elev_array,dist_array):
         gradient_array.append(gradient)
     return gradient_array
 
-gpx_file = open("gpx_files/Trondheim_stafetten_etappe_1.gpx", "r")
+gpx_file = open("gpx_files/Trondheim_stafetten_etappe_9.gpx", "r")
 
 gpx = gpxpy.parse(gpx_file)
 
