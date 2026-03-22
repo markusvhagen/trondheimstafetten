@@ -361,7 +361,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibWFya3VzdmhhZ2VuIiwiYSI6ImNtZ2NlNjNrbjE0bzkyb
                   type: 'Feature',
                   geometry: {
                       type: 'Point',
-                      coordinates: etappe_coordinates[20]
+                      coordinates: etappe_coordinates[0]
                   },
                   properties: {}
               }
@@ -375,7 +375,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibWFya3VzdmhhZ2VuIiwiYSI6ImNtZ2NlNjNrbjE0bzkyb
                 'icon-image': 'stafettpinne',
                 'icon-allow-overlap': true,
                 'icon-size': 1,
-                'text-field': etappe_distance_array[20].toString() + "m",
+                'text-field': etappe_distance_array[0].toString() + "m",
                 'text-size': 25,
                 'text-allow-overlap': true, // Allow text to overlap other symbols if necessary
             },
@@ -432,7 +432,7 @@ if (!isMobile) {
       rightNudge = 0;
     }
     // Text that was in last argument before: etappe_distance_array[index] + "m, " + etappe_altitude_array[index] + "hm, inc:" + getIncline(etappe_coordinates[dataIndex+leftNudge],etappe_coordinates[dataIndex+rightNudge],etappe_altitude_array[dataIndex+leftNudge],etappe_altitude_array[dataIndex+rightNudge]) + "%"
-    map.setLayoutProperty("my-circle", "text-field", "")
+    map.setLayoutProperty("my-circle", "text-field", etappe_distance_array[index] + "m")
 
   });
 }
