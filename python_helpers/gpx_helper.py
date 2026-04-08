@@ -1,6 +1,7 @@
 import gpxpy
 import gpxpy.gpx
 import geopy.distance
+import math
 
 def gradient_compute(elev_array,dist_array):
     gradient_array  = []
@@ -18,7 +19,13 @@ def gradient_compute(elev_array,dist_array):
         gradient_array.append(gradient)
     return gradient_array
 
-gpx_file = open("gpx_files/Trondheim_stafetten_etappe_9.gpx", "r")
+def distance_3d(coord1, coord2, elev1, elev2):
+    dist_2d = geopy.distance.geodesic(coord2, coord1).m
+    dist_elev = abs(elev2 - elev1)
+    dist_3d = math.sqrt(dist_2d**2 + dist_elev**2)
+    return dist_3d
+
+gpx_file = open("gpx_files/Trondheim_stafetten_etappe_7.gpx", "r")
 
 gpx = gpxpy.parse(gpx_file)
 
@@ -40,14 +47,16 @@ for track in gpx.tracks:
             # compute distance between two points
             if has_entered_point_loop:
                 new_coord = (xy[0],xy[1])
-                increment = geopy.distance.geodesic(new_coord, prev_xy_coord).m
+                new_z = z[0]
+                increment = distance_3d(new_coord, prev_xy_coord, new_z, prev_z)
                 total_dist = total_dist + increment
-                dist_array.append(int(total_dist))
+                dist_array.append(math.ceil(total_dist))
 
             gps_array.append([xy[1],xy[0]]) #have to switch the order because this is how mapbox reads coordinates
             z_array.append(int(z[0]))
             non_filtered_z_array.append(z[0])
             prev_xy_coord = xy
+            prev_z = z[0]
             if has_entered_point_loop == False:
                 has_entered_point_loop = True
 print("GPS:")
