@@ -25,7 +25,7 @@ def distance_3d(coord1, coord2, elev1, elev2):
     dist_3d = math.sqrt(dist_2d**2 + dist_elev**2)
     return dist_3d
 
-gpx_file = open("gpx_files/Trondheim_stafetten_etappe_7.gpx", "r")
+gpx_file = open("gpx_files/Trondheim_stafetten_etappe_6.gpx", "r")
 
 gpx = gpxpy.parse(gpx_file)
 
@@ -72,7 +72,7 @@ print(gradient_compute(non_filtered_z_array,dist_array))
 flat = 0
 down = 0
 up = 0
-threshold = 1.5
+threshold = 2
 for gradient in gradient_compute(non_filtered_z_array,dist_array):
     if abs(gradient) < threshold:
         flat += 1
